@@ -23,7 +23,14 @@ namespace SQLite
 
         public SQLiteConnection(string path)
         {
-            prefix = path + ".";
+            if (string.IsNullOrEmpty(path.Trim()))
+            {
+                prefix = "";
+            }
+            else
+            {
+                prefix = path + ".";
+            }
         }
 
         public void CreateTable<T>() where T : new()
