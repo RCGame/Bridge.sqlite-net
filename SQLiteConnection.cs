@@ -28,13 +28,11 @@ namespace SQLite
 
         public void CreateTable<T>() where T : new()
         {
-            T row = new T();
-            List<T> rows = new List<T>();
-            rows.Add(row);
-            string json = JsonConvert.SerializeObject(rows);
             var item = Window.LocalStorage.GetItem(prefix + typeof(T).Name);
             if (item == null)
             {
+                List<T> rows = new List<T>();
+                string json = JsonConvert.SerializeObject(rows);
                 Window.LocalStorage.SetItem(prefix + typeof(T).Name, json);
             }
         }
@@ -52,11 +50,19 @@ namespace SQLite
                     var attrs = property.GetCustomAttributes();
                     if (attrs.Where(t => t.ToString() == "SQLite.AutoIncrement").Count() > 0)
                     {
-                        row[name] = rows.Max(t => (int)t[name]) + 1;
+                        if (rows.Count() == 0)
+                        {
+                            row[name] = 0;
+                        }
+                        else
+                        {
+                            row[name] = rows.Max(t => (int)t[name]) + 1;
+                        }
                         rows.Add(row);
                         Window.LocalStorage.SetItem(prefix + typeof(T).Name, JsonConvert.SerializeObject(rows));
+
                     }
-                }              
+                }
             }
             return row;
         }
@@ -105,10 +111,10 @@ namespace SQLite
         {
             string json = "[]";
             var item = Window.LocalStorage.GetItem(prefix + typeof(T).Name);
-            if (item == null)
+            if (item != null)
             {
-                var tmp = Window.LocalStorage.GetItem(prefix + typeof(T).Name).ToString();
-                var rows = JsonConvert.DeserializeObject<List<T>>(tmp);
+                var str = item.ToString();
+                var rows = JsonConvert.DeserializeObject<List<T>>(str);
                 Window.LocalStorage.SetItem(prefix + typeof(T).Name, json);
                 return rows.Count();
             }
@@ -117,7 +123,14 @@ namespace SQLite
 
         public List<T> Table<T>()
         {
-            throw new NotImplementedException();
+            var item = Window.LocalStorage.GetItem(prefix + typeof(T).Name);
+            if (item != null)
+            {
+                var json = item.ToString();
+                var rows = JsonConvert.DeserializeObject<List<T>>(json);
+                return rows;
+            }
+            throw new Exception("Table " + typeof(T).Name + " is empty.");
         }
     }
 }
