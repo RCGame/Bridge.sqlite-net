@@ -74,7 +74,7 @@ namespace SQLite
             return row;
         }
 
-        public void Update<T>(T row)
+        public int Update<T>(T row)
         {
             var item = Window.LocalStorage.GetItem(prefix + typeof(T).Name);
             if (item != null)
@@ -93,9 +93,11 @@ namespace SQLite
                             target[prop.Name] = row[prop.Name];
                         }
                         Window.LocalStorage.SetItem(prefix + typeof(T).Name, JsonConvert.SerializeObject(rows));
+                        return 1;
                     }
                 }
             }
+            return 0;
         }
 
         public void UpdateAll<T>(IEnumerable<T> rows)
@@ -112,6 +114,29 @@ namespace SQLite
             {
                 Insert(row);
             }
+        }
+
+        public int Delete<T>(T row)
+        {
+            var item = Window.LocalStorage.GetItem(prefix + typeof(T).Name);
+            if (item != null)
+            {
+                List<T> rows = JsonConvert.DeserializeObject<List<T>>(item.ToString());
+                var linq = typeof(T).GetProperties().Where(t => t.GetCustomAttributes().Count() > 0);
+                foreach (var property in linq)
+                {
+                    var name = property.Name;
+                    var attrs = property.GetCustomAttributes();
+                    if (attrs.Where(t => t.ToString() == "SQLite.PrimaryKey").Count() > 0)
+                    {
+                        var target = rows.Where(t => t[name] == row[name]).First();
+                        bool did = rows.Remove(target);
+                        Window.LocalStorage.SetItem(prefix + typeof(T).Name, JsonConvert.SerializeObject(rows));
+                        return 1;
+                    }
+                }
+            }
+            return 0;
         }
 
         public int DeleteAll<T>()
