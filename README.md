@@ -26,6 +26,9 @@ public class Valuation
 }
 
 var conn = new SQLiteConnection(databasePath);
+conn.CreateTable<Stock>();
+conn.CreateTable<Valuation>();
+
 var query = conn.Table<Stock>().Where(v => v.Symbol.StartsWith("A"));
 ```
 
