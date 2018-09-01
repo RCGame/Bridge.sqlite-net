@@ -100,19 +100,61 @@ namespace SQLite
             return 0;
         }
 
-        public void UpdateAll<T>(IEnumerable<T> rows)
+        public void UpdateAll<T>(IEnumerable<T> updates)
         {
-            foreach (var row in rows)
+            var item = Window.LocalStorage.GetItem(prefix + typeof(T).Name);
+            if (item != null)
             {
-                Update(row);
+                List<T> rows = JsonConvert.DeserializeObject<List<T>>(item.ToString());
+                var linq = typeof(T).GetProperties().Where(t => t.GetCustomAttributes().Count() > 0);
+                foreach (var property in linq)
+                {
+                    var name = property.Name;
+                    var attrs = property.GetCustomAttributes();
+                    if (attrs.Where(t => t.ToString() == "SQLite.PrimaryKey").Count() > 0)
+                    {
+                        foreach (var row in updates)
+                        {
+                            var target = rows.Where(t => t[name] == row[name]).First();
+                            foreach (var prop in typeof(T).GetProperties())
+                            {
+                                target[prop.Name] = row[prop.Name];
+                            }
+                        }
+                        Window.LocalStorage.SetItem(prefix + typeof(T).Name, JsonConvert.SerializeObject(rows));
+                    }
+                }
             }
         }
 
-        public void InsertAll<T>(IEnumerable<T> rows)
+        public void InsertAll<T>(IEnumerable<T> inserts)
         {
-            foreach (var row in rows)
+            var item = Window.LocalStorage.GetItem(prefix + typeof(T).Name);
+            if (item != null)
             {
-                Insert(row);
+                List<T> rows = JsonConvert.DeserializeObject<List<T>>(item.ToString());
+                var linq = typeof(T).GetProperties().Where(t => t.GetCustomAttributes().Count() > 0);
+                foreach (var property in linq)
+                {
+                    var name = property.Name;
+                    var attrs = property.GetCustomAttributes();
+                    if (attrs.Where(t => t.ToString() == "SQLite.AutoIncrement").Count() > 0)
+                    {
+                        foreach (var row in inserts)
+                        {
+                            if (rows.Count() == 0)
+                            {
+                                row[name] = 0;
+                            }
+                            else
+                            {
+                                row[name] = rows.Max(t => (int)t[name]) + 1;
+                            }
+                            rows.Add(row);
+                        }
+                        Window.LocalStorage.SetItem(prefix + typeof(T).Name, JsonConvert.SerializeObject(rows));
+                    }
+                }
             }
         }
 
