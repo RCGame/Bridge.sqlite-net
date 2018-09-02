@@ -31,7 +31,7 @@ var conn = new SQLiteConnection(databasePath);
 conn.CreateTable<Stock>();
 conn.CreateTable<Valuation>();
 
-var Id = conn.Insert(new Stock() {		
+conn.Insert(new Stock() {		
 	Symbol = "Awesome stock"		
     });	
 conn.Insert(new Stock() {		
