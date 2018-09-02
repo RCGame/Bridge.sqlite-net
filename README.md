@@ -9,6 +9,8 @@ This is a cut-down version. What has been cut?
 Please refer to the original sqlite-net project, [sqlite-net](https://github.com/praeclarum/sqlite-net).
 
 ```csharp
+using SQLite;
+
 public class Stock
 {
 	[PrimaryKey, AutoIncrement]
@@ -29,6 +31,13 @@ var conn = new SQLiteConnection(databasePath);
 conn.CreateTable<Stock>();
 conn.CreateTable<Valuation>();
 
+var Id = conn.Insert(new Stock() {		
+	Symbol = "Awesome stock"		
+    });	
+conn.Insert(new Stock() {		
+        Symbol = "Bluechip"		
+    });
+    
 var query = conn.Table<Stock>().Where(v => v.Symbol.StartsWith("A"));
 ```
 
