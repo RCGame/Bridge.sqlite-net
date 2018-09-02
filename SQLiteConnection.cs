@@ -44,8 +44,9 @@ namespace SQLite
             }
         }
 
-        public T Insert<T>(T row)
+        public int Insert<T>(T row)
         {
+            int index = -1, count = 0;
             var item = Window.LocalStorage.GetItem(prefix + typeof(T).Name);
             if (item != null)
             {
@@ -59,19 +60,21 @@ namespace SQLite
                     {
                         if (rows.Count() == 0)
                         {
-                            row[name] = 0;
+                            index = 0;
                         }
                         else
                         {
-                            row[name] = rows.Max(t => (int)t[name]) + 1;
+                            index = rows.Max(t => (int)t[name]) + 1;
                         }
+                        row[name] = index;
+                        count++;
                         rows.Add(row);
                         Window.LocalStorage.SetItem(prefix + typeof(T).Name, JsonConvert.SerializeObject(rows));
 
                     }
                 }
             }
-            return row;
+            return count;
         }
 
         public int Update<T>(T row)
@@ -100,8 +103,9 @@ namespace SQLite
             return 0;
         }
 
-        public void UpdateAll<T>(IEnumerable<T> updates)
+        public int UpdateAll<T>(IEnumerable<T> updates)
         {
+            int count = 0;
             var item = Window.LocalStorage.GetItem(prefix + typeof(T).Name);
             if (item != null)
             {
@@ -120,15 +124,18 @@ namespace SQLite
                             {
                                 target[prop.Name] = row[prop.Name];
                             }
+                            count++;
                         }
                         Window.LocalStorage.SetItem(prefix + typeof(T).Name, JsonConvert.SerializeObject(rows));
                     }
                 }
             }
+            return count;
         }
 
-        public void InsertAll<T>(IEnumerable<T> inserts)
+        public int InsertAll<T>(IEnumerable<T> inserts)
         {
+            int count = 0;
             var item = Window.LocalStorage.GetItem(prefix + typeof(T).Name);
             if (item != null)
             {
@@ -150,12 +157,14 @@ namespace SQLite
                             {
                                 row[name] = rows.Max(t => (int)t[name]) + 1;
                             }
+                            count++;
                             rows.Add(row);
                         }
                         Window.LocalStorage.SetItem(prefix + typeof(T).Name, JsonConvert.SerializeObject(rows));
                     }
                 }
             }
+            return count;
         }
 
         public int Delete<T>(T row)
