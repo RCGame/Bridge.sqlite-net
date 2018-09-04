@@ -1,6 +1,6 @@
 # Bridge.sqlite-net
 Bridge.Net implementation of the popular ORM tool sqlite-net using HTML5 localStorage.
-This is a cut-down version. What has been cut? (Although development of these missing pieces is in the roadmap) 
+This is a cut-down version. What has been cut? (Although development of these missing pieces is in the roadmap, contribution is also welcomed) 
 1. Running SQL query is not expected. Only the ORM part is supported, then you can run LINQ against all entities.
 2. Asychronous is not supported, javascript is single-threaded.
 
