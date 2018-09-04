@@ -41,5 +41,5 @@ conn.Insert(new Stock() {
 var query = conn.Table<Stock>().Where(v => v.Symbol.StartsWith("A"));
 ```
 
-In Html5 localStorage, there is no such a concept of databasePath. You can use databasePath as a prefix item key.
+In Html5 localStorage, there is no such a concept of databasePath. You can use databasePath as an item key prefix.
 So if your databasePath = "MyStudio.MyGame", above Stock entity will be stored as window.localStorage.getItem("MyStudio.MyGame.Stock");
