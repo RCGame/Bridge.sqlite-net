@@ -21,7 +21,7 @@ namespace SQLite
     {
         internal string prefix;
 
-        public SQLiteConnection(string path)
+        public SQLiteConnection(string path = "")
         {
             prefix = string.IsNullOrEmpty(path) ? "" : path + ".";
         }
@@ -178,7 +178,7 @@ namespace SQLite
 
         public int DeleteAll<T>()
         {
-            var item = window.localStorage.getItem(prefix + typeof(T).Name);
+            var item = getTable<T>();
             if(item != null)
             {
                 var rows = JsonConvert.DeserializeObject<List<T>>(item);

@@ -7,8 +7,8 @@
     <ProjectGuid>{1233E9BA-AF5F-4E11-A53F-29E0C50F14CB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Bridge.sqlite_net</RootNamespace>
-    <AssemblyName>Bridge.sqlite-net</AssemblyName>
+    <RootNamespace>SQLite</RootNamespace>
+    <AssemblyName>SQLite</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
