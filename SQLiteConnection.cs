@@ -16,14 +16,25 @@ namespace SQLite
     {
     }
 
+    public enum StorageMode
+    {
+        LocalStorage,
+        SessionStorage,
+        /// <summary>
+        /// single process only
+        /// </summary>
+        DictinaryStorage
+    }
+
     //Html5 Local Storage implementation of SQLite
     public class SQLiteConnection
     {
         internal string prefix;
-
-        public SQLiteConnection(string path = "")
+        internal StorageMode StorageMode;
+        public SQLiteConnection(string path = "", StorageMode storageMode = StorageMode.LocalStorage)
         {
             prefix = string.IsNullOrEmpty(path) ? "" : path + ".";
+            StorageMode = storageMode;
         }
 
         public void CreateTable<T>() where T : new()
@@ -186,12 +197,12 @@ namespace SQLite
 
         private string getTable<T>()
         {
-            return window.localStorage.getItem(prefix + typeof(T).Name);
+            return SQLiteStorageModes.GetItem(prefix + typeof(T).Name, StorageMode);            
         }
 
         private void setTable<T>(List<T> rows)
         {
-            window.localStorage.setItem(prefix + typeof(T).Name, JsonConvert.SerializeObject(rows));
+            SQLiteStorageModes.SetItem(prefix + typeof(T).Name, JsonConvert.SerializeObject(rows), StorageMode);            
         }
 
         public List<T> Table<T>()

@@ -14,7 +14,8 @@ namespace SQLite
         private bool _wasNew;
         public long AutoIncrementTotal = 0;
         public string AutoIncrementName;
-        public string PrimaryKeyName;        
+        public string PrimaryKeyName;
+        private SQLiteConnection _innerConnection;
         /// <summary>
         /// The amount to increase 
         /// </summary>
@@ -47,11 +48,7 @@ namespace SQLite
 
         public void Save()
         {
-            // no blocking save..
-            window.setTimeout((obj) =>
-            {
-                window.localStorage.setItem(_metaString, JsonConvert.SerializeObject(this));
-            }, 0);
+            SQLiteStorageModes.SetItem(_metaString, JsonConvert.SerializeObject(this), this._innerConnection.StorageMode);
         }
 
         public bool WasNew()
@@ -59,9 +56,10 @@ namespace SQLite
             return _wasNew;
         }
 
-        private static SQLiteTableMeta createMeta<T>(string metaString)
+        private static SQLiteTableMeta createMeta<T>(string metaString, SQLiteConnection connection)
         {
             var newMetaTagle = new SQLiteTableMeta();
+            newMetaTagle._innerConnection = connection;
             newMetaTagle._wasNew = true;
 
             var properties = typeof(T).GetProperties().Where(t => t.GetCustomAttributes().Count() > 0).ToArray();
@@ -109,16 +107,16 @@ namespace SQLite
             newMetaTagle.Save();            
 
             return newMetaTagle;
-        }
+        }        
 
         public static SQLiteTableMeta GetMeta<T>(SQLiteConnection connection)
         {
             string metaString = connection.prefix + typeof(T).Name + TableMetaExtension;
-
-            var item = window.localStorage.getItem(metaString);
+            
+            var item = SQLiteStorageModes.GetItem(metaString, connection.StorageMode);
             if(item == null)
             {
-                var newMeta = createMeta<T>(metaString);
+                var newMeta = createMeta<T>(metaString, connection);
                 newMeta._metaString = metaString;
 
                 memoryTableMeta.Add(metaString, newMeta);
@@ -137,6 +135,7 @@ namespace SQLite
                     oldMeta = JsonConvert.DeserializeObject<SQLiteTableMeta>(item);                   
                 }
 
+                oldMeta._innerConnection = connection;
                 oldMeta._metaString = metaString;
                 return oldMeta;
             }            
