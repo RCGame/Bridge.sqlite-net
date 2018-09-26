@@ -27,17 +27,13 @@ namespace SQLite
         }
 
         public void CreateTable<T>() where T : new()
-        {
-            string path = prefix + typeof(T).Name;
-
-            var item = window.localStorage.getItem(path);
+        {            
+            var item = getTable<T>();
             var meta = SQLiteTableMeta.GetMeta<T>(this);
 
             if(item == null)
             {
-                window.localStorage.setItem(prefix + typeof(T).Name, JsonConvert.SerializeObject(
-                    new List<T>()
-                ));
+                setTable<T>(new List<T>());                
             }
         }
 
