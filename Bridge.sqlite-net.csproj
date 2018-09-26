@@ -34,21 +34,38 @@
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SQLiteConnection.cs" />
+    <Compile Include="SQLiteTableMeta.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Bridge, Version=17.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Bridge.Core.17.3.0\lib\net40\Bridge.dll</HintPath>
-    </Reference>
-    <Reference Include="Bridge.Html5, Version=17.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Bridge.Html5.17.3.0\lib\net40\Bridge.Html5.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=1.10.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Bridge.Newtonsoft.Json.1.10.0\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Retyped.Core, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Retyped.Core.1.6.6733\lib\net40\Retyped.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Retyped.dom, Version=2.8.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Retyped.dom.2.8.6733\lib\net40\Retyped.dom.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Retyped.es5, Version=2.8.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Retyped.es5.2.8.6733\lib\net40\Retyped.es5.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Retyped.scripthost, Version=2.8.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Retyped.scripthost.2.8.6733\lib\net40\Retyped.scripthost.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SQLiteConnection.cs" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="bridge.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
