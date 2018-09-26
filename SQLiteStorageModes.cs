@@ -22,7 +22,6 @@ namespace SQLite
                     window.sessionStorage.setItem(key, value);
                     break;
                 case StorageMode.DictinaryStorage:
-                    _innerStorage[key] = value;
 
                     if(_innerStorage.ContainsKey(key))
                     {

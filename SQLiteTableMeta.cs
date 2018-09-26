@@ -61,6 +61,7 @@ namespace SQLite
             var newMetaTagle = new SQLiteTableMeta();
             newMetaTagle._innerConnection = connection;
             newMetaTagle._wasNew = true;
+            newMetaTagle._metaString = metaString;
 
             var properties = typeof(T).GetProperties().Where(t => t.GetCustomAttributes().Count() > 0).ToArray();
             int length = properties.Length;
@@ -117,8 +118,7 @@ namespace SQLite
             if(item == null)
             {
                 var newMeta = createMeta<T>(metaString, connection);
-                newMeta._metaString = metaString;
-
+                
                 memoryTableMeta.Add(metaString, newMeta);
 
                 return newMeta;
@@ -132,7 +132,9 @@ namespace SQLite
                     oldMeta = memoryTableMeta[metaString];
                 }else
                 {
-                    oldMeta = JsonConvert.DeserializeObject<SQLiteTableMeta>(item);                   
+                    oldMeta = JsonConvert.DeserializeObject<SQLiteTableMeta>(item);
+
+                    memoryTableMeta.Add(metaString, oldMeta);
                 }
 
                 oldMeta._innerConnection = connection;
